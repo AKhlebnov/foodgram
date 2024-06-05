@@ -7,7 +7,11 @@ from api.views import ShortLinkRedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('s/<str:short_string>/', ShortLinkRedirectView.as_view(), name='recipe-short-link'),
+    path(
+        's/<str:short_string>/',
+        ShortLinkRedirectView.as_view(),
+        name='recipe-short-link'
+    ),
     path('api/', include('api.urls')),
     path('api/', include('users.urls')),
 ]

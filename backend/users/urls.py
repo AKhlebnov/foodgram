@@ -1,6 +1,10 @@
 from django.urls import include, path
 
-from .views import CurrentUserViewSet, UpdateDeleteAvatarViewSet
+from .views import (
+    CurrentUserViewSet,
+    UpdateDeleteAvatarViewSet,
+    SubscriptionsViewSet
+)
 
 urlpatterns = [
     path(
@@ -14,6 +18,16 @@ urlpatterns = [
             {'put': 'update', 'patch': 'partial_update', 'delete': 'destroy'}
         ),
         name='update-avatar'
+    ),
+    path(
+        'users/subscriptions/',
+        SubscriptionsViewSet.as_view({'get': 'list'}),
+        name='subscriptions-list'
+    ),
+    path(
+        'users/<int:pk>/subscribe/',
+        SubscriptionsViewSet.as_view({'post': 'create', 'delete': 'destroy'}),
+        name='subscribe-user'
     ),
     path('', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
