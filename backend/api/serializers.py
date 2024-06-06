@@ -33,6 +33,7 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
     Сериализатор для промежуточной модели рецепты/ингредиенты.
     """
 
+    id = serializers.IntegerField(source='ingredient.id')
     name = serializers.CharField(source='ingredient.name')
     measurement_unit = serializers.CharField(
         source='ingredient.measurement_unit'
