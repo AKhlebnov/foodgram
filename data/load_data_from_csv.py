@@ -1,23 +1,39 @@
-import os
 import csv
+import os
+import sys
 
-from backend.recipes.models import Ingredient  # Импортируйте модель Ingredient из вашего приложения
+import django
+
+from backend.recipes.models import Ingredient
+
+# Получаем корневую директорию проекта
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Добавляем корневую директорию в sys.path
+sys.path.append(BASE_DIR)
+
+# Устанавливаем настройки Django
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'foodgram.settings')
+django.setup()
 
 
 def load_data_from_csv(file_path):
+    """
+    Функция для загрузки данных из CSV-файла в базу данных.
+    """
+
     with open(file_path, 'r', encoding='utf-8') as file:
-        reader = csv.DictReader(file)
+        reader = csv.reader(file)
         for row in reader:
-            name = row['name']
-            measurement_unit = row['measurement_unit']
-            # Создаем объект Ingredient и сохраняем его в базу данных
+            name = row[0]
+            measurement_unit = row[1]
+
             Ingredient.objects.create(
                 name=name,
-                measurement_unit=measurement_unit)
+                measurement_unit=measurement_unit
+            )
 
 
 if __name__ == '__main__':
-    # Путь к файлу CSV с данными
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    csv_file_path = os.path.join(BASE_DIR, 'data', 'ingredients.csv')  # Укажите правильный путь к файлу CSV
+    csv_file_path = os.path.join(BASE_DIR, 'data', 'ingredients.csv')
     load_data_from_csv(csv_file_path)

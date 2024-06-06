@@ -1,16 +1,14 @@
-from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, status, mixins
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.exceptions import ValidationError
 from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
+from rest_framework import mixins, status, viewsets
+from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
-from .serializers import (
-    UserSerializer,
-    AvatarUpdateDeleteSerializer,
-    SubscriptionSerializers
-)
 from recipes.models import Subscription
+
+from .serializers import (AvatarUpdateDeleteSerializer,
+                          SubscriptionSerializers, UserSerializer)
 
 User = get_user_model()
 

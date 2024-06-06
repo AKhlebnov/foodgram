@@ -1,10 +1,7 @@
 from django.urls import include, path
 
-from .views import (
-    CurrentUserViewSet,
-    UpdateDeleteAvatarViewSet,
-    SubscriptionsViewSet
-)
+from .views import (CurrentUserViewSet, SubscriptionsViewSet,
+                    UpdateDeleteAvatarViewSet)
 
 urlpatterns = [
     path(

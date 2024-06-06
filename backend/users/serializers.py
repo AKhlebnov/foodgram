@@ -1,13 +1,15 @@
 import base64
+
+from django.contrib.auth import get_user_model
+from django.core.files.base import ContentFile
 from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer
 from djoser.serializers import UserSerializer as BaseUserSerializer
-from django.core.files.base import ContentFile
-from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
+from foodgram.constants import MAX_EMAIL_LENGTH, MAX_NAME_LENGTH
+from recipes.models import Recipe, Subscription
+
 from .validators import username_validator
-from foodgram.constants import MAX_NAME_LENGTH, MAX_EMAIL_LENGTH
-from recipes.models import Subscription, Recipe
 
 User = get_user_model()
 

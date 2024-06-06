@@ -1,10 +1,10 @@
-from django.db import models
 from django.contrib.auth import get_user_model
+from django.db import models
+
+from foodgram.constants import (MAX_INGREDIENT_M_U, MAX_INGREDIENT_NAME,
+                                MAX_RECIPE_NAME, MAX_TAG_FIELD)
 
 from .validators import validate_custom_string
-from foodgram.constants import (
-    MAX_TAG_FIELD, MAX_INGREDIENT_NAME, MAX_INGREDIENT_M_U, MAX_RECIPE_NAME
-)
 
 User = get_user_model()
 

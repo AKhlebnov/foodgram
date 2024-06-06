@@ -25,3 +25,9 @@ COPY . .
 
 # При старте контейнера запустить сервер разработки.
 CMD ["gunicorn", "--bind", "0.0.0.0:9090", "foodgram.wsgi"]
+
+# При старте контейнера выполнить миграции, собрать статику, скопировать её и запустить сервер разработки.
+# CMD ["sh", "-c", "python manage.py migrate && \
+#                   python manage.py collectstatic --noinput && \
+#                   cp -r /app/collected_static/. /static/static/ && \
+#                   gunicorn --bind 0.0.0.0:9090 foodgram.wsgi"]

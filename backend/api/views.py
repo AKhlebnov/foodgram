@@ -1,25 +1,24 @@
 import os
 
 from django.http import FileResponse
+from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils import baseconv
-from django.shortcuts import get_object_or_404
 from django.views.generic import RedirectView
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import permissions, viewsets, status
+from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from recipes.models import Recipe, Tag, Ingredient
 from foodgram.settings import PDF_DIR
-from .serializers import (
-    RecipeSerializer, RecipeCreateUpdateSerializer,
-    TagSerializer, IngredientSerializer, FavoriteSerializer,
-    ShoppingCartSerializer
-)
-from .filters import RecipeFilter, IngredientFilter
-from .utils import generate_shopping_cart_pdf, generate_short_link
+from recipes.models import Ingredient, Recipe, Tag
+
+from .filters import IngredientFilter, RecipeFilter
 from .permissions import IsOwnerOrReadOnly
+from .serializers import (FavoriteSerializer, IngredientSerializer,
+                          RecipeCreateUpdateSerializer, RecipeSerializer,
+                          ShoppingCartSerializer, TagSerializer)
+from .utils import generate_shopping_cart_pdf, generate_short_link
 
 
 class RecipeViewSet(viewsets.ModelViewSet):

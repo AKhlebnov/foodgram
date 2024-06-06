@@ -1,0 +1,41 @@
+version: '3.3'
+
+volumes:
+  pg_data:
+  static:
+  media:
+
+services:
+  db:
+    image: postgres:13.10
+    env_file: .env
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  backend:
+    image: helleric/foodgram_backend
+    env_file: .env
+    volumes:
+      - static:/static/
+      - media:/app/media/
+    depends_on:
+      - db
+
+  frontend:
+    env_file: .env
+    image: helleric/foodgram_frontend
+    command: cp -r /app/result_build/. /static/
+    volumes:
+      - static:/static/
+
+  gateway:
+    image: helleric/foodgram_gateway
+    env_file: .env
+    ports:
+      - 9090:80
+    volumes:
+      - static:/static/
+      - media:/media/
+    depends_on:
+      - backend
+      - frontend
