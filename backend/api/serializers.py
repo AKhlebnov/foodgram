@@ -169,12 +169,6 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
                     "Время приготовления не может быть меньше 1 минуты."
                 )
 
-            if not data.get('image'):
-                field_name = 'image'
-                raise serializers.ValidationError(
-                    {field_name: ["Обязательное поле."]}
-                )
-
         ingredients = data.get('ingredients', [])
 
         for ingredient_data in ingredients:
