@@ -117,7 +117,7 @@ class UserSerializer(BaseUserSerializer):
         """
 
         request = self.context.get('request')
-        if request and request.user.is_authenticated:
+        if request.user.is_authenticated:
             return Subscription.objects.filter(
                 user=request.user, author=obj
             ).exists()
