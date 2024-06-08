@@ -1,10 +1,15 @@
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.db import models
 
 from foodgram.constants import (MAX_INGREDIENT_M_U, MAX_INGREDIENT_NAME,
                                 MAX_RECIPE_NAME, MAX_TAG_FIELD)
 
-from .validators import validate_custom_string
+from .validators import (
+    validate_custom_string,
+    validate_cooking_time,
+    validate_amount,
+)
 
 User = get_user_model()
 
@@ -68,7 +73,10 @@ class Recipe(models.Model):
     )
     image = models.ImageField('Изображение', upload_to='recipes/images/')
     text = models.TextField('Описание')
-    cooking_time = models.PositiveIntegerField('Время приготовления (мин)')
+    cooking_time = models.PositiveIntegerField(
+        'Время приготовления (мин)',
+        validators=[validate_cooking_time]
+    )
     ingredients = models.ManyToManyField(
         Ingredient,
         through='RecipeIngredient',
@@ -89,6 +97,13 @@ class Recipe(models.Model):
     def __str__(self):
         return self.name
 
+    def clean(self):
+        super().clean()
+        if not self.ingredients.exists():
+            raise ValidationError(
+                'Рецепт должен содержать хотя бы один ингредиент'
+            )
+
 
 class RecipeIngredient(models.Model):
     """
@@ -107,7 +122,10 @@ class RecipeIngredient(models.Model):
         on_delete=models.CASCADE,
         related_name='recipe_ingredients'
     )
-    amount = models.PositiveIntegerField('Количество')
+    amount = models.PositiveIntegerField(
+        'Количество',
+        validators=[validate_amount]
+    )
 
     class Meta:
         unique_together = ['recipe', 'ingredient']
@@ -188,7 +206,7 @@ class Subscription(models.Model):
         User,
         verbose_name='Пользователь',
         on_delete=models.CASCADE,
-        related_name='subscriptions'
+        related_name='subscriptions',
     )
     author = models.ForeignKey(
         User,
@@ -209,3 +227,8 @@ class Subscription(models.Model):
 
     def __str__(self):
         return f"Подписка: {self.user.username} на {self.author.username}"
+
+    def clean(self):
+        super().clean()
+        if self.user == self.author:
+            raise ValidationError('Нельзя подписаться на самого себя')
