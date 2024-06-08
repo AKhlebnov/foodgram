@@ -13,19 +13,3 @@ def validate_custom_string(value):
             'Значение может содержать только '
             'буквы, цифры, дефисы и подчеркивания.'
         )
-
-
-def validate_cooking_time(value):
-    """
-    Валидация числа, должно быть больше 0.
-    """
-    if value <= 0:
-        raise ValidationError('Время приготовления должно быть больше 0')
-
-
-def validate_amount(value):
-    """
-    Валидация ингредиентов, должно быть больше 0.
-    """
-    if value <= 0:
-        raise ValidationError('Количество ингредиента должно быть больше 0')

@@ -11,6 +11,7 @@ class RecipeIngredientInline(admin.TabularInline):
 
     model = RecipeIngredient
     extra = 1
+    min_num = 1
 
 
 @admin.register(Recipe)
@@ -24,7 +25,7 @@ class RecipeAdmin(admin.ModelAdmin):
     )
     search_fields = ('name', 'author__username')
     inlines = [RecipeIngredientInline]
-    filter_horizontal = ('tags',)
+    filter_horizontal = ('tags', )
     list_filter = ('tags',)
 
     def get_favorites_count(self, obj):

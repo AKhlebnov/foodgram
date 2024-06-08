@@ -1,12 +1,12 @@
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator
 from django.db import models
+from django.forms import ValidationError
 
 from foodgram.constants import (MAX_INGREDIENT_M_U, MAX_INGREDIENT_NAME,
                                 MAX_RECIPE_NAME, MAX_TAG_FIELD)
 
-from .validators import (validate_amount, validate_cooking_time,
-                         validate_custom_string)
+from .validators import validate_custom_string
 
 User = get_user_model()
 
@@ -72,7 +72,7 @@ class Recipe(models.Model):
     text = models.TextField('Описание')
     cooking_time = models.PositiveIntegerField(
         'Время приготовления (мин)',
-        validators=[validate_cooking_time]
+        validators=[MinValueValidator(1)]
     )
     ingredients = models.ManyToManyField(
         Ingredient,
@@ -94,13 +94,6 @@ class Recipe(models.Model):
     def __str__(self):
         return self.name
 
-    def clean(self):
-        super().clean()
-        if not self.ingredients.exists():
-            raise ValidationError(
-                'Рецепт должен содержать хотя бы один ингредиент'
-            )
-
 
 class RecipeIngredient(models.Model):
     """
@@ -121,7 +114,7 @@ class RecipeIngredient(models.Model):
     )
     amount = models.PositiveIntegerField(
         'Количество',
-        validators=[validate_amount]
+        validators=[MinValueValidator(1)]
     )
 
     class Meta:
