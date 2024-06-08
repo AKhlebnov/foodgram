@@ -5,11 +5,8 @@ from django.db import models
 from foodgram.constants import (MAX_INGREDIENT_M_U, MAX_INGREDIENT_NAME,
                                 MAX_RECIPE_NAME, MAX_TAG_FIELD)
 
-from .validators import (
-    validate_custom_string,
-    validate_cooking_time,
-    validate_amount,
-)
+from .validators import (validate_amount, validate_cooking_time,
+                         validate_custom_string)
 
 User = get_user_model()
 
