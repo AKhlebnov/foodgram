@@ -138,6 +138,5 @@ dmypy.json
 .idea
 .vscode
 
-static/
 media/
 pdf/
