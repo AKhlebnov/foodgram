@@ -3,9 +3,9 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from django.forms import ValidationError
 
-from foodgram.constants import (
-    MAX_INGREDIENT_M_U, MAX_INGREDIENT_NAME,
-    MAX_RECIPE_NAME, MAX_TAG_FIELD, MIN_VALIDATOR_VALUE)
+from foodgram.constants import (MAX_INGREDIENT_M_U, MAX_INGREDIENT_NAME,
+                                MAX_RECIPE_NAME, MAX_TAG_FIELD,
+                                MIN_VALIDATOR_VALUE)
 
 from .validators import validate_custom_string
 

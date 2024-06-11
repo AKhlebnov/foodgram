@@ -7,12 +7,11 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 
+from foodgram.constants import (BODY_FONT_SIZE, BODY_LINE_SPACING, FONT,
+                                FONT_BOLD, FONT_BOLD_PATH, FONT_PATH, HEADER,
+                                HEADER_FONT_SIZE, HEADER_LINE_SPACING,
+                                MARGIN_X, START_Y)
 from foodgram.settings import PDF_DIR
-from foodgram.constants import (
-    FONT, FONT_PATH, FONT_BOLD, FONT_BOLD_PATH,
-    BODY_FONT_SIZE, HEADER_FONT_SIZE, HEADER,
-    START_Y, MARGIN_X, BODY_LINE_SPACING, HEADER_LINE_SPACING
-)
 
 
 def generate_shopping_cart_pdf(recipes, user):
