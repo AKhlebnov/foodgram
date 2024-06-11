@@ -35,7 +35,12 @@ class User(AbstractUser):
         unique=True,
         db_index=True,
     )
-    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
+    avatar = models.ImageField(
+        verbose_name='Аватар',
+        upload_to='avatars/',
+        null=True,
+        blank=True
+    )
 
     class Meta:
         ordering = ('username', )

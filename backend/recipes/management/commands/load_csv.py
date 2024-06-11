@@ -15,16 +15,14 @@ def read_csv(name_file):
     path = os.path.join('static/data', name_file)
     with open(path, encoding='utf-8') as csv_file:
         reader = csv.reader(csv_file)
-        return list(reader)
+        return [row for row in reader if row]
 
 
 def load_data(model, name_file):
     """Метод загрузки данных в указанную модель из CSV файла."""
     table = read_csv(name_file)
-    for row in table:
-        if row:
-            name, measurement_unit = row
-            model.objects.create(name=name, measurement_unit=measurement_unit)
+    for name, measurement_unit in table:
+        model.objects.create(name=name, measurement_unit=measurement_unit)
 
 
 def del_data():

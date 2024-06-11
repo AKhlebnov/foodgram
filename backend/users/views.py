@@ -81,7 +81,7 @@ class SubscriptionsViewSet(
         """
 
         user = self.request.user
-        author = get_object_or_404(User, pk=self.kwargs['pk'])
+        author = get_object_or_404(User, pk=self.kwargs['author_id'])
         context = {'request': request, 'author': author, 'user': user}
         serializer = self.get_serializer(data=request.data, context=context)
         serializer.is_valid(raise_exception=True)
@@ -97,7 +97,7 @@ class SubscriptionsViewSet(
         """
 
         user = self.request.user
-        author = get_object_or_404(User, pk=self.kwargs['pk'])
+        author = get_object_or_404(User, pk=self.kwargs['author_id'])
         if not Subscription.objects.filter(user=user, author=author).exists():
             raise ValidationError(
                 'У вас нет подписки на этого автора.'

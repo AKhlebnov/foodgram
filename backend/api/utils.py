@@ -1,5 +1,4 @@
 import os
-import pprint
 from collections import defaultdict
 
 from django.utils import baseconv
@@ -9,6 +8,11 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 
 from foodgram.settings import PDF_DIR
+from foodgram.constants import (
+    FONT, FONT_PATH, FONT_BOLD, FONT_BOLD_PATH,
+    BODY_FONT_SIZE, HEADER_FONT_SIZE, HEADER,
+    START_Y, MARGIN_X, BODY_LINE_SPACING, HEADER_LINE_SPACING
+)
 
 
 def generate_shopping_cart_pdf(recipes, user):
@@ -24,32 +28,30 @@ def generate_shopping_cart_pdf(recipes, user):
             ingredient = recipe_ingredient.ingredient
             ingredients_dict[ingredient] += recipe_ingredient.amount
 
-    pprint.pprint(ingredients_dict)
-
     file_name = f'Корзина_пользователя_{user.username}.pdf'
     file_path = os.path.join(PDF_DIR, file_name)
 
     pdf_canvas = canvas.Canvas(file_path, pagesize=letter)
-    pdfmetrics.registerFont(TTFont('DejaVu', 'fonts/DejaVuSans.ttf'))
-    pdfmetrics.registerFont(TTFont('DejaVu-Bold', 'fonts/DejaVuSans-Bold.ttf'))
+    pdfmetrics.registerFont(TTFont(FONT, FONT_PATH))
+    pdfmetrics.registerFont(TTFont(FONT_BOLD, FONT_BOLD_PATH))
 
-    pdf_canvas.setFont('DejaVu-Bold', 16)
-    y = 750
+    pdf_canvas.setFont(FONT_BOLD, HEADER_FONT_SIZE)
+    y = START_Y
     pdf_canvas.drawString(
-        100, y, 'Список ингредиентов:'
+        MARGIN_X, y, HEADER
     )
-    y -= 30
+    y -= HEADER_LINE_SPACING
 
-    pdf_canvas.setFont('DejaVu', 12)
+    pdf_canvas.setFont(FONT, BODY_FONT_SIZE)
     serial_number = 0
     for ingredient, amount in ingredients_dict.items():
         serial_number += 1
         pdf_canvas.drawString(
-            100, y,
+            MARGIN_X, y,
             f'{serial_number}. {ingredient.name}: '
             f'{amount} {ingredient.measurement_unit}'
         )
-        y -= 20
+        y -= BODY_LINE_SPACING
 
     pdf_canvas.save()
     return file_name

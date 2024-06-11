@@ -65,30 +65,34 @@ class UserCreateSerializer(BaseUserCreateSerializer):
             'id', 'email', 'username', 'first_name', 'last_name', 'password'
         )
 
-    def validate(self, attrs):
+    def validate_username(self, value):
         """
-        Валидация полей username и email.
+        Валидация поля username.
         """
 
-        username = attrs.get('username')
-        email = attrs.get('email')
-
-        if username == 'me':
+        if value == 'me':
             raise serializers.ValidationError(
                 'Использование имени "me" запрещено.'
             )
 
-        if User.objects.filter(username=username).exists():
+        if User.objects.filter(username=value).exists():
             raise serializers.ValidationError(
                 'Этот username уже используется.'
             )
 
-        if User.objects.filter(email=email).exists():
+        return value
+
+    def validate_email(self, value):
+        """
+        Валидация поля email.
+        """
+
+        if User.objects.filter(email=value).exists():
             raise serializers.ValidationError(
                 'Этот email уже используется.'
             )
 
-        return attrs
+        return value
 
 
 class UserSerializer(BaseUserSerializer):
@@ -117,11 +121,11 @@ class UserSerializer(BaseUserSerializer):
         """
 
         request = self.context.get('request')
-        if request.user.is_authenticated:
-            return Subscription.objects.filter(
+        return (
+            request.user.is_authenticated
+            and Subscription.objects.filter(
                 user=request.user, author=obj
-            ).exists()
-        return False
+            ).exists())
 
 
 class AvatarUpdateDeleteSerializer(serializers.ModelSerializer):
@@ -133,7 +137,7 @@ class AvatarUpdateDeleteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['avatar', ]
+        fields = ('avatar', )
 
     def validate(self, value):
         """
@@ -141,9 +145,8 @@ class AvatarUpdateDeleteSerializer(serializers.ModelSerializer):
         """
 
         if not value.get('avatar'):
-            field_name = 'avatar'
             raise serializers.ValidationError(
-                {field_name: ["Обязательное поле."]}
+                {'avatar': ["Обязательное поле."]}
             )
         return value
 
@@ -191,7 +194,7 @@ class SubscriptionSerializers(serializers.ModelSerializer):
             'recipes_count'
         )
 
-    def validate(self, data):
+    def validate_subscription_data(self, data):
         """
         Валидация данных подписки.
         """
@@ -204,12 +207,20 @@ class SubscriptionSerializers(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     'Вы уже подписаны на этого автора.'
                 )
+
             if user.id == author.id:
                 raise serializers.ValidationError(
                     'Вы не можете подписаться на самого себя.'
                 )
 
         return data
+
+    def validate(self, data):
+        """
+        Обобщенная валидация данных.
+        """
+
+        return self.validate_subscription_data(data)
 
     def create(self, validated_data):
         """

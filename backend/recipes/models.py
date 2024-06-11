@@ -3,8 +3,9 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from django.forms import ValidationError
 
-from foodgram.constants import (MAX_INGREDIENT_M_U, MAX_INGREDIENT_NAME,
-                                MAX_RECIPE_NAME, MAX_TAG_FIELD)
+from foodgram.constants import (
+    MAX_INGREDIENT_M_U, MAX_INGREDIENT_NAME,
+    MAX_RECIPE_NAME, MAX_TAG_FIELD, MIN_VALIDATOR_VALUE)
 
 from .validators import validate_custom_string
 
@@ -72,7 +73,7 @@ class Recipe(models.Model):
     text = models.TextField('Описание')
     cooking_time = models.PositiveIntegerField(
         'Время приготовления (мин)',
-        validators=[MinValueValidator(1)]
+        validators=[MinValueValidator(MIN_VALIDATOR_VALUE)]
     )
     ingredients = models.ManyToManyField(
         Ingredient,
@@ -114,7 +115,7 @@ class RecipeIngredient(models.Model):
     )
     amount = models.PositiveIntegerField(
         'Количество',
-        validators=[MinValueValidator(1)]
+        validators=[MinValueValidator(MIN_VALIDATOR_VALUE)]
     )
 
     class Meta:
@@ -208,9 +209,13 @@ class Subscription(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=['user', 'author'],
-                name='unique_subscription'
-            )
+                fields=('user', 'author'),
+                name='unique_subscription',
+            ),
+            models.CheckConstraint(
+                check=~models.Q(user__exact=models.F('author')),
+                name='prevent_subscription',
+            ),
         ]
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
